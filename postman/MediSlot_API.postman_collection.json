@@ -1,0 +1,223 @@
+{
+  "info": {
+    "name": "MediSlot Clinic API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "API tests for the healthcare appointment portal QA project."
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:5000" },
+    { "key": "token", "value": "" },
+    { "key": "appointmentId", "value": "" },
+    { "key": "appointmentDate", "value": "" },
+    { "key": "appointmentTime", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/health"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('status ok', function () { pm.expect(pm.response.json().status).to.eql('ok'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "List doctors",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/doctors"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Three doctors', function () { pm.expect(pm.response.json().doctors.length).to.eql(3); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login success",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"username\": \"patient\", \"password\": \"Patient@123\"}"
+        },
+        "url": "{{baseUrl}}/api/login"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Has token', function () { pm.expect(pm.response.json().token).to.be.ok; });",
+              "pm.collectionVariables.set('token', pm.response.json().token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login failure",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"username\": \"patient\", \"password\": \"wrong\"}"
+        },
+        "url": "{{baseUrl}}/api/login"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 401', function () { pm.response.to.have.status(401); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "List appointments",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/appointments"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create appointment valid",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"patient_name\": \"Kiran Das\",\n  \"age\": 40,\n  \"phone\": \"9123456780\",\n  \"email\": \"kiran@example.com\",\n  \"department\": \"General Medicine\",\n  \"doctor_id\": 1,\n  \"date\": \"{{appointmentDate}}\",\n  \"time\": \"{{appointmentTime}}\",\n  \"reason\": \"Fever\"\n}"
+        },
+        "url": "{{baseUrl}}/api/appointments"
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const offset = Math.floor(Math.random() * 365) + 1;",
+              "const appointmentDate = new Date();",
+              "appointmentDate.setDate(appointmentDate.getDate() + offset);",
+              "const year = appointmentDate.getFullYear();",
+              "const month = String(appointmentDate.getMonth() + 1).padStart(2, '0');",
+              "const day = String(appointmentDate.getDate()).padStart(2, '0');",
+              "pm.collectionVariables.set('appointmentDate', `${year}-${month}-${day}`);",
+              "const slots = ['09:00', '10:00', '11:00', '14:00', '16:00'];",
+              "pm.collectionVariables.set('appointmentTime', slots[Math.floor(Math.random() * slots.length)]);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 201', function () { pm.response.to.have.status(201); });",
+              "pm.collectionVariables.set('appointmentId', pm.response.json().appointment.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get appointment created in this run",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/appointments/{{appointmentId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Returns created patient', function () { pm.expect(pm.response.json().appointment.patient_name).to.eql('Kiran Das'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reject empty appointment body (BUG-11 retest)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": { "mode": "raw", "raw": "{}" },
+        "url": "{{baseUrl}}/api/appointments"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 400', function () {",
+              "  pm.response.to.have.status(400);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Unknown appointment id returns 404 (BUG-12 retest)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/appointments/99999"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 404', function () {",
+              "  pm.response.to.have.status(404);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

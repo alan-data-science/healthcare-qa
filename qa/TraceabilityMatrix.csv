@@ -1,0 +1,7 @@
+Requirement ID,Requirement,Test cases,Bugs
+REQ-01,Login and home access,TC-01 TC-02 TC-03 TC-04 TC-05 TC-06 TC-07 TC-08 TC-33 TC-34,BUG-01 BUG-02
+REQ-02,Book appointment happy path,TC-09 TC-10 TC-19 TC-35,
+REQ-03,Patient data validation,TC-11 TC-12 TC-13 TC-14 TC-15 TC-16 TC-17 TC-18 TC-20 TC-21 TC-32,BUG-03 BUG-04 BUG-05 BUG-06 BUG-07 BUG-08 BUG-09 BUG-10
+REQ-04,View appointments,TC-22,
+REQ-05,REST API,TC-23 TC-24 TC-25 TC-26 TC-27 TC-28 TC-29 TC-30 TC-31,BUG-11 BUG-12
+REQ-06,Logout,TC-08,

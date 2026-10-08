@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Register · MediSlot{% endblock %}
+{% block content %}
+<h1>Patient registration</h1>
+{% if error %}<p class="alert error">{{ error }}</p>{% endif %}
+<form method="post" class="card" novalidate>
+  <label>Full name
+    <input type="text" name="full_name" required>
+  </label>
+  <label>Username
+    <input type="text" name="username" required>
+  </label>
+  <label>Password
+    <input type="password" name="password" required>
+  </label>
+  <label>Email
+    <input type="email" name="email" required>
+  </label>
+  <label>Phone (10 digits)
+    <input type="text" name="phone" required maxlength="10">
+  </label>
+  <button type="submit" class="btn">Register</button>
+</form>
+{% endblock %}

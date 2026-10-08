@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <p class="kicker">Outpatient scheduling</p>
+  <h1>Healthcare Appointment Management System</h1>
+  <p>Patients register, book a doctor slot, and track confirmation IDs. Administrators can view every booking. Data is stored in SQLite with validation on both the web form and the REST API.</p>
+  {% if user %}
+    <a class="btn" href="{{ url_for('book') }}">Book appointment</a>
+  {% else %}
+    <a class="btn" href="{{ url_for('register') }}">Register as patient</a>
+    <a class="btn btn-alt" href="{{ url_for('login') }}">Login</a>
+  {% endif %}
+</section>
+<section class="grid">
+  <article>
+    <h2>Clinic hours</h2>
+    <p>Monday–Saturday<br>09:00, 10:00, 11:00, 14:00, 16:00</p>
+  </article>
+  <article>
+    <h2>Departments</h2>
+    <ul>
+      {% for d in doctors %}
+        <li>{{ d.name }} — {{ d.department }}</li>
+      {% endfor %}
+    </ul>
+  </article>
+  <article>
+    <h2>Seeded accounts (testing)</h2>
+    <p>patient / Patient@123<br>admin / Admin@123</p>
+  </article>
+</section>
+{% endblock %}

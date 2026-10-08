@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}MediSlot Clinic{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="{{ url_for('home') }}">MediSlot Clinic</a>
+    <nav>
+      <a href="{{ url_for('home') }}">Home</a>
+      {% if user %}
+        <a href="{{ url_for('book') }}">Book</a>
+        <a href="{{ url_for('list_appointments') }}">Appointments</a>
+        <span class="who">{{ user.full_name }} ({{ user.role }})</span>
+        <a href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+        <a href="{{ url_for('register') }}">Register</a>
+        <a href="{{ url_for('login') }}">Login</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main class="wrap">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="foot">Healthcare Appointment Management System</footer>
+</body>
+</html>

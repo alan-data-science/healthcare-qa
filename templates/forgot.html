@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Forgot password · MediSlot{% endblock %}
+{% block content %}
+<h1>Forgot password</h1>
+<div class="card">
+  <p>Password reset email is not enabled in this academic build.</p>
+  <p>Contact the clinic administrator to restore access, or login with a seeded test account.</p>
+  <p>Administrator email: <strong>admin@medislot.local</strong></p>
+  <p><a class="btn" href="{{ url_for('login') }}">Back to login</a></p>
+</div>
+{% endblock %}
