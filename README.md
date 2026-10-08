@@ -57,12 +57,4 @@ For manual API testing, import `postman/MediSlot_API.postman_collection.json` in
 
 The original v1.0 black-box execution, defect report, and traceability matrix are in `qa/`, along with the completed v2.0 retest results. All 35 existing cases passed on v2.0; no cases were added.
 
-## Resume line
-
-> Designed and executed 35 black-box test cases for a healthcare appointment portal, documented 12 v1.0 defects, then verified the fixes with a 35/35 v2.0 retest and REST API regression.
-
-## Interview (30 seconds)
-
-I tested a clinic booking flow: login, patient data, appointment slots, and REST APIs. I recorded and prioritized defects during the v1.0 run, then re-executed the same test cases against v2.0 and verified all 12 reported defects.
-
 This is an academic demonstration, not a real clinic system. Use only the included demo accounts and non-sensitive test data.
